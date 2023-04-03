@@ -33,8 +33,11 @@ public class LessonService {
             throw new IllegalArgumentException("Lekcja nie moze byc tworzona w przeszlosci");
         }
 
-        Student student = studentRepository.findById(studentId).orElseThrow(() -> new EntityNotFoundException(""));
-        Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new EntityNotFoundException(""));
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono studenta o id: " + studentId));
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono nauczyciela o id: " + teacherId));
+
 
         if (lessonRepository.existsByTeacherAndDateTimeBetween(teacher, newTime.minusMinutes(59), newTime.plusMinutes(59))) {
             throw new IllegalArgumentException("Inna lekcja zostala juz rozpoczeta w tym czasie");

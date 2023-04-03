@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.masters</groupId>
-    <artifactId>coding</artifactId>
+    <artifactId>coding-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>coding</name>
+    <name>coding-api</name>
     <description>coding</description>
     <properties>
         <java.version>17</java.version>

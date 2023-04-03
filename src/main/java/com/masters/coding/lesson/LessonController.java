@@ -23,23 +23,21 @@ public class LessonController {
     private final StudentService studentService;
 
     @GetMapping
-    public String getLessonList(Model model){
-        model.addAttribute("lessons",lessonService.findAll());
+    public String getLessonList(Model model) {
+        model.addAttribute("lessons", lessonService.findAll());
         return "lesson/list";
     }
 
     @GetMapping("/create")
-    public String getLessonCreateForm(Model model){
+    public String getLessonCreateForm(Model model) {
         model.addAttribute("teachers", teacherService.findAll());
         model.addAttribute("students", studentService.findAll());
         return "lesson/form";
     }
 
     @PostMapping("/create")
-    public String createLesson(Lesson lesson,
-                               @RequestParam("studentId") int studentId,
-                               @RequestParam("teacherId") int teacherId) {
-        lessonService.save(lesson,studentId,teacherId);
+    public String createLesson(Lesson lesson, @RequestParam("studentId") int studentId, @RequestParam("teacherId") int teacherId) {
+        lessonService.save(lesson, studentId, teacherId);
         return "redirect:/lessons";
     }
 
@@ -54,6 +52,7 @@ public class LessonController {
         model.addAttribute("lesson", lessonService.findById(lessonId));
         return "lesson/changeDateTime";
     }
+
     @PostMapping("/update")
     public String updateLesson(@RequestParam int lessonId, @RequestParam LocalDateTime newTime, Model model) throws IllegalArgumentException, EntityNotFoundException {
         Lesson updatedLesson = lessonService.updateLessonTime(lessonId, newTime);

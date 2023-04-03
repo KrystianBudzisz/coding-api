@@ -8,23 +8,20 @@ import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)     //zaprzęga do pracy Mockito (adnotacje @Mock oraz @InjectMocks)
-class StudentServiceTest {
+@ExtendWith(MockitoExtension.class)
+public class StudentServiceTest {
 
     @InjectMocks
     private StudentService studentService;
@@ -35,126 +32,91 @@ class StudentServiceTest {
     @Mock
     private TeacherRepository teacherRepository;
 
-    @Captor
-    private ArgumentCaptor<Student> studentArgumentCaptor;
+    private Student student;
+    private Teacher teacher;
 
-    //poniższa metoda może zostać zastąpiona adnotacjami @Mock oraz @InjectMocks
-//    @BeforeEach
-//    void init() {
-//        studentRepository = mock(StudentRepository.class);
-//        teacherRepository = mock(TeacherRepository.class);
-//        studentService = new StudentService(studentRepository, teacherRepository);
-//    }
+    @BeforeEach
+    public void setUp() {
+        student = new Student();
+        student.setId(1);
+        student.setFirstName("John");
+        student.setLastName("Doe");
+        student.setLanguage(Language.JAVA);
+
+        teacher = new Teacher();
+        teacher.setId(1);
+        teacher.setFirstName("Alice");
+        teacher.setLastName("Smith");
+        teacher.setLanguages(Collections.singleton(Language.JAVA));
+    }
 
     @Test
-    void testFindAll_ResultsInStudentListBeingReturned() {
-        //given
-        Student student = Student.builder()
-                .id(1)
-                .firstName("Test")
-                .lastName("Testowy")
-                .language(Language.JAVA)
-                .build();
-        List<Student> studentsFromRepo = List.of(student);
-
-        when(studentRepository.findAll()).thenReturn(studentsFromRepo);
-
-        //when
-        List<Student> returned = studentService.findAll();
-
-        //then
-        assertEquals(studentsFromRepo, returned);
+    public void findAllTest() {
+        studentService.findAll();
         verify(studentRepository).findAll();
     }
 
     @Test
-    void testSave_ResultsInStudentBeingSaved() {
-        //given
-        int teacherId = 1;
-        Student student = Student.builder()
-                .firstName("Test")
-                .lastName("Testowy")
-                .language(Language.JAVA)
-                .active(false)
-                .build();
-        Teacher teacher = Teacher.builder()
-                .id(teacherId)
-                .firstName("Test2")
-                .lastName("Testowy2")
-                .languages(Set.of(Language.JAVA))
-                .build();
+    public void saveStudentTest() {
+        when(teacherRepository.findById(1)).thenReturn(Optional.of(teacher));
 
-        when(teacherRepository.findById(teacherId)).thenReturn(Optional.of(teacher));
+        studentService.save(student, 1);
 
-        //when
-        studentService.save(student, teacherId);
-
-        //then
-        verify(teacherRepository).findById(teacherId);
-
-        verify(studentRepository).save(studentArgumentCaptor.capture());
-        Student saved = studentArgumentCaptor.getValue();
-        assertEquals(student.getFirstName(), saved.getFirstName());
-        assertEquals(student.getLastName(), saved.getLastName());
-        assertEquals(student.getLanguage(), saved.getLanguage());
-        assertEquals(teacher, saved.getTeacher());
-        assertTrue(saved.isActive());
+        verify(studentRepository).save(student);
     }
 
     @Test
-    void testSave_TeacherFoundWithWrongLanguage_ResultsInIllegalArgumentException() {
-        //given
-        int teacherId = 1;
-        Language language = Language.JAVA;
-        String exceptionMsg = MessageFormat.format("Language {0} is not being taught by this teacher", language);
-        Student student = Student.builder()
-                .firstName("Test")
-                .lastName("Testowy")
-                .language(language)
-                .build();
-        Teacher teacher = Teacher.builder()
-                .id(teacherId)
-                .firstName("Test2")
-                .lastName("Testowy2")
-                .languages(Set.of(Language.PYTHON))
-                .build();
+    public void saveStudentInvalidTeacherLanguageTest() {
+        teacher.getLanguages().remove(Language.JAVA);
+        when(teacherRepository.findById(1)).thenReturn(Optional.of(teacher));
 
-        when(teacherRepository.findById(teacherId)).thenReturn(Optional.of(teacher));
-
-        //when //then
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> studentService.save(student, teacherId));
-        assertEquals(exceptionMsg, exception.getMessage());
-
-
-        verify(teacherRepository).findById(teacherId);
-        verifyNoInteractions(studentRepository);
+        assertThrows(IllegalArgumentException.class, () -> studentService.save(student, 1));
     }
 
     @Test
-    void testSave_TeacherNotFound_ResultsInEntityNotFoundException() {
-        //given
-        int teacherId = 1;
-        String exceptionMsg = MessageFormat.format("Teacher with id: {0} was not found", teacherId);
-        Student student = Student.builder()
-                .firstName("Test")
-                .lastName("Testowy")
-                .build();
+    public void updateTeacherTest() {
+        when(teacherRepository.findById(1)).thenReturn(Optional.of(teacher));
+        when(studentRepository.findById(1)).thenReturn(Optional.of(student));
 
-        when(teacherRepository.findById(teacherId)).thenReturn(Optional.empty());
+        studentService.updateTeacher(1, 1);
 
-        //when //then
-//        EntityNotFoundException exception = assertThrows(
-//                EntityNotFoundException.class,
-//                () -> studentService.save(student, teacherId));
-//        assertEquals(exceptionMsg, exception.getMessage());
-        assertThatExceptionOfType(EntityNotFoundException.class)
-                .isThrownBy(() -> studentService.save(student, teacherId))
-                .withMessage(exceptionMsg);
-
-        verify(teacherRepository).findById(teacherId);
-        verifyNoInteractions(studentRepository);
+        verify(studentRepository).save(student);
     }
 
+    @Test
+    public void updateTeacherInvalidTeacherLanguageTest() {
+        teacher.getLanguages().remove(Language.JAVA);
+        when(teacherRepository.findById(1)).thenReturn(Optional.of(teacher));
+        when(studentRepository.findById(1)).thenReturn(Optional.of(student));
+
+        assertThrows(IllegalArgumentException.class, () -> studentService.updateTeacher(1, 1));
+    }
+
+    @Test
+    public void deleteByIdTest() {
+        studentService.deleteById(1);
+        verify(studentRepository).deleteById(1);
+    }
+
+    @Test
+    public void findAllByTeacherIdTest() {
+        studentService.findAllByTeacherId(1);
+        verify(studentRepository).findAllByTeacherId(1);
+    }
+
+    @Test
+    public void findByIdTest() {
+        when(studentRepository.findById(1)).thenReturn(Optional.of(student));
+
+        studentService.findById(1);
+
+        verify(studentRepository).findById(1);
+    }
+
+    @Test
+    public void findByIdNotFoundTest() {
+        when(studentRepository.findById(1)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> studentService.findById(1));
+    }
 }

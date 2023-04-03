@@ -6,7 +6,6 @@ import com.masters.coding.student.model.Student;
 import com.masters.coding.student.model.StudentDto;
 import com.masters.coding.teacher.TeacherService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -51,17 +50,17 @@ public class StudentController {
 
     }
     @GetMapping("/update")
-    public String getTeacherUpdate(@RequestParam int studentId, Model model) {
+    public String getStudentUpdate(@RequestParam int studentId, Model model) {
         Student student = studentService.findById(studentId);
         model.addAttribute("student", student);
         model.addAttribute("teachers", teacherService.findAllByLanguage(student.getLanguage()));
         return "student/changeTeacher";
     }
 
+
     @PostMapping("/update")
-    public String updateStudent(@RequestParam int studentId, @RequestParam int teacherId, Model model) {
-        Student updatedStudent = studentService.updateTeacher(studentId, teacherId);
-        model.addAttribute("student", updatedStudent);
+    public String updateStudent(@RequestParam int studentId, @RequestParam int teacherId) {
+        studentService.updateTeacher(studentId, teacherId);
         return "redirect:/students";
     }
 
@@ -71,4 +70,5 @@ public class StudentController {
     public void deleteById(@RequestParam int idToDelete) {
         studentService.deleteById(idToDelete);
     }
+
 }

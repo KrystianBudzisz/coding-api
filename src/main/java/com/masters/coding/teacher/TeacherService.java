@@ -2,6 +2,7 @@ package com.masters.coding.teacher;
 
 import com.masters.coding.common.Language;
 import com.masters.coding.teacher.model.Teacher;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +29,10 @@ public class TeacherService {
 
     public void deleteById(int id) {
         teacherRepository.deleteById(id);
+    }
+
+    public Teacher findById(int id) {
+        return teacherRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono nauczyciela o danym id: " + id));
     }
 }

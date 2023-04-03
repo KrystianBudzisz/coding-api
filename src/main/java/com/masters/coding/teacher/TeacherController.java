@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/teachers")
 public class TeacherController {
@@ -18,10 +18,19 @@ public class TeacherController {
     private final TeacherService teacherService;
 
     @GetMapping
-    public String getTeachersList(Model model) {
-        model.addAttribute("teachers", teacherService.findAll());
-        return "teacher/list";
+    public List<TeacherDto> getTeachersList() {
+        return teacherService.findAll().stream()
+                .map(TeacherDto::fromEntity)
+                .toList();
     }
+
+    @GetMapping("/{id}")
+    public TeacherDto findById(@PathVariable("id") int id) {
+        return TeacherDto.fromEntity(teacherService.findById(id));
+    }
+
+
+    //##########################################################
 
     @GetMapping("/create")
     public String getTeacherCreateForm(Model model) {
@@ -36,7 +45,6 @@ public class TeacherController {
     }
 
     @GetMapping(params = "language")
-    @ResponseBody
     public List<TeacherDto> findAllByLanguage(@RequestParam Language language){
         return teacherService.findAllByLanguage(language).stream()
                 .map(TeacherDto::fromEntity)
@@ -44,7 +52,6 @@ public class TeacherController {
     }
 
     @DeleteMapping(params = "idToDelete")
-    @ResponseBody
     public void deleteById(@RequestParam int idToDelete) {
         teacherService.deleteById(idToDelete);
     }

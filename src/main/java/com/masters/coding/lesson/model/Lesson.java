@@ -4,6 +4,7 @@ import com.masters.coding.student.model.Student;
 import com.masters.coding.teacher.model.Teacher;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Entity
+@SQLDelete(sql = "UPDATE lesson SET active = '0' WHERE id = ?")
 public class Lesson {
 
     @Id
@@ -26,6 +28,7 @@ public class Lesson {
     private Teacher teacher;
 
     private LocalDateTime dateTime;
+    private boolean active;
 
     public String toString() {
         return student.getFirstName() + " " + student.getLastName();

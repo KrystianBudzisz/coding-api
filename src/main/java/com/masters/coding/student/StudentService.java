@@ -1,6 +1,5 @@
 package com.masters.coding.student;
 
-import com.masters.coding.lesson.model.Lesson;
 import com.masters.coding.student.model.Student;
 import com.masters.coding.teacher.TeacherRepository;
 import com.masters.coding.teacher.model.Teacher;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -27,27 +25,28 @@ public class StudentService {
     public void save(Student student, int teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new EntityNotFoundException(MessageFormat
-                        .format("Teacher with id: {0} was not found", teacherId)));
-
+                        .format("Nauczyciel o id: {0} nie został znaleziony", teacherId)));
         if (!teacher.getLanguages().contains(student.getLanguage())) {
             throw new IllegalArgumentException(MessageFormat
-                    .format("Language {0} is not being taught by this teacher", student.getLanguage()));
+                    .format("Język {0} nie jest nauczany przez tego nauczyciela", student.getLanguage()));
         }
-
         student.setTeacher(teacher);
         student.setActive(true);
         studentRepository.save(student);
     }
-    public Student updateTeacher(int studentId, int teacherId) {
-        Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new EntityNotFoundException("Nie znaleziono nauczyciel o danym id: " + teacherId));
-        Student student = studentRepository.findById(studentId).orElseThrow(() -> new EntityNotFoundException("Nie znaleziono studenta o danym id: " + studentId));
-       if(!teacher.getLanguages().contains(student.getLanguage())) {
-           throw new IllegalArgumentException("Jezyk nauczyciela jest nie prawidlowy ");
-       }
-        return studentRepository.save(student);
+
+    public void updateTeacher(int studentId, int teacherId) {
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono nauczyciela o danym id: " + teacherId));
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono ucznia o danym id: " + studentId));
+
+        if (!teacher.getLanguages().contains(student.getLanguage())) {
+            throw new IllegalArgumentException("Język nauczyciela jest nieprawidłowy");
+        }
+        student.setTeacher(teacher);
+        studentRepository.save(student);
     }
-
-
 
     public void deleteById(int id) {
         studentRepository.deleteById(id);
@@ -56,8 +55,9 @@ public class StudentService {
     public List<Student> findAllByTeacherId(int teacherId) {
         return studentRepository.findAllByTeacherId(teacherId);
     }
+
     public Student findById(int studentId) {
         return studentRepository.findById(studentId)
-                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono lekcji o danym " + studentId));
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono ucznia o danym id: " + studentId));
     }
 }
