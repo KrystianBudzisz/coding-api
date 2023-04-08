@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formularz nauczycieli</title>
+</head>
+<body>
+<h1>Dodaj nauczyciela</h1>
+</br>
+
+<form method="post" action="/teachers/create">
+
+    <input type="text" name="firstName" placeholder="Imię"/></br>
+    <input type="text" name="lastName" placeholder="Nazwisko"/></br>
+    </br>
+
+    <label>języki:</label></br>
+    <select name="languages" multiple>
+        <option th:each="language : ${languages}" th:text="${language}" th:value="${language}"></option>
+    </select>
+
+    </br>
+    </br>
+    <button type="submit">Dodaj</button>
+
+</form>
+
+</body>
+</html>

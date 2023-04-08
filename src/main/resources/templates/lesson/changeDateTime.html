@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Change date and time of the lesson</title>
+
+
+</head>
+<body>
+
+
+<table>
+    <thead>
+    <tr>
+        <th>Lesson ID</th>
+        <th>Student ID</th>
+        <th>Teacher ID</th>
+        <th>Date and Time</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td th:text="${lesson.id}"></td>
+        <td th:text="${lesson.student}"></td>
+        <td th:text="${lesson.teacher}"></td>
+        <td th:text="${lesson.dateTime}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<form method="post" name="lessonId" action="/lessons/update">
+
+    <input type="number" name="lessonId" th:value="${lesson.id}" hidden>
+    <input type="datetime-local" name="newTime">
+    </br>
+    </br>
+    </br>
+    </br>
+    <button type="submit">aktualizuj lekcję</button>
+</form>
+</body>
+</html>

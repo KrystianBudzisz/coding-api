@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Formularz lekcji</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+</head>
+<body>
+<h1>Dodaj lekcje</h1>
+</br>
+
+<form method="post" action="/lessons/create">
+
+    <input type="datetime-local" name="dateTime">
+    </br>
+    </br>
+
+    <select id="teacherSelect" name="teacherId" onchange="populateStudents(this.id, 'studentSelect')">
+        <option value="" disabled selected>wybierz nauczyciela</option>
+        <option th:each="teacher : ${teachers}" th:text="${teacher}" th:value="${teacher.id}"></option>
+    </select>
+    </br>
+    </br>
+    <select id="studentSelect" name="studentId">
+        <option value="" disabled selected>Wybierz ucznia</option>
+    </select>
+    </br>
+    </br>
+    <button type="submit">Dodaj lekcję</button>
+</form>
+</body>
+</html>
+
+<script type="text/javascript">
+
+    function populateStudents(tSelectId, sSelectId) {
+        let teacherSelect = document.getElementById(tSelectId);
+        let studentSelect = document.getElementById(sSelectId);
+        let link = "/students?teacher=" + teacherSelect.value;
+
+        $.getJSON(link, function (data) {
+            studentSelect.innerHTML = '<option value="" disabled selected>Wybierz studenta</option>';
+            data.forEach(student => {
+                let option = '<option value="' + student.id + '">' + student.firstName + ' ' + student.lastName + '</option>';
+                studentSelect.innerHTML += option;
+            })
+        });
+    }
+
+</script>

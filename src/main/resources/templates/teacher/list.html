@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nauczyciele</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body>
+<h1>Nauczyciele</h1>
+</br>
+
+<p2><a href="/teachers/create">dodaj</a></p2>
+</br>
+</br>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Imię</th>
+        <th>Nazwisko</th>
+        <th>  </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="teacher : ${teachers}">
+        <td th:text="${teacher.id}"></td>
+        <td th:text="${teacher.firstName}"></td>
+        <td th:text="${teacher.lastName}"></td>
+        <td><button th:id="btn + ${teacher.id}" th:value="${teacher.id}" onclick="deleteTeacher(this.id)">Usuń</button></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
+
+<script type="text/javascript">
+
+    function deleteTeacher(btnId) {
+        let btn = document.getElementById(btnId);
+        let url = "/teachers?idToDelete=" + btn.value;
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            success: function () {
+                window.location.reload();
+            },
+            error:  function () {
+                alert("wystąpił błąd podczas usuwania")
+            }
+        })
+    }
+
+</script>
