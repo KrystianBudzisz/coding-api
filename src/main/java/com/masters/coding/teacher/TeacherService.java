@@ -18,9 +18,9 @@ public class TeacherService {
         return teacherRepository.findAllByActiveTrue();
     }
 
-    public void save(Teacher teacher) {
+    public Teacher save(Teacher teacher) {
         teacher.setActive(true);
-        teacherRepository.save(teacher);
+        return teacherRepository.save(teacher); // dodanie return ?
     }
 
     public List<Teacher> findAllByLanguage(Language language) {

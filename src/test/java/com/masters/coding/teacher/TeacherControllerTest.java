@@ -1,34 +1,34 @@
-package com.masters.coding.teacher;
-
-import com.masters.coding.common.Language;
-import com.masters.coding.teacher.model.Teacher;
-import com.masters.coding.teacher.model.TeacherDto;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.ui.Model;
-
-import java.util.Collections;
-import java.util.List;
-
-import static org.mockito.Mockito.verify;
-
-@ExtendWith(MockitoExtension.class)
-public class TeacherControllerTest {
-
-    @InjectMocks
-    private TeacherController teacherController;
-
-    @Mock
-    private TeacherService teacherService;
-
-    @Mock
-    private Model model;
-
-    private Teacher teacher;
+//package com.masters.coding.teacher;
+//
+//import com.masters.coding.common.Language;
+//import com.masters.coding.teacher.model.Teacher;
+//import com.masters.coding.teacher.model.TeacherDto;
+//import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.extension.ExtendWith;
+//import org.mockito.InjectMocks;
+//import org.mockito.Mock;
+//import org.mockito.junit.jupiter.MockitoExtension;
+//import org.springframework.ui.Model;
+//
+//import java.util.Collections;
+//import java.util.List;
+//
+//import static org.mockito.Mockito.verify;
+//
+//@ExtendWith(MockitoExtension.class)
+//public class TeacherControllerTest {
+//
+//    @InjectMocks
+//    private TeacherController teacherController;
+//
+//    @Mock
+//    private TeacherService teacherService;
+//
+//    @Mock
+//    private Model model;
+//
+//    private Teacher teacher;
 
 //    @BeforeEach
 //    public void setUp() {
@@ -67,4 +67,4 @@ public class TeacherControllerTest {
 //        teacherController.deleteById(1);
 //        verify(teacherService).deleteById(1);
 //    }
-}
+//}

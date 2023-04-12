@@ -6,15 +6,19 @@ import com.masters.coding.student.model.Student;
 import com.masters.coding.teacher.TeacherService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-@Controller
 @RequiredArgsConstructor
-@RequestMapping("/lessons")
+@RestController
+@RequestMapping("/api/lessons")
 
 public class LessonController {
 
@@ -23,40 +27,38 @@ public class LessonController {
     private final StudentService studentService;
 
     @GetMapping
-    public String getLessonList(Model model) {
-        model.addAttribute("lessons", lessonService.findAll());
-        return "lesson/list";
+    public List<Lesson> getLessonList() {
+        return lessonService.findAll();
     }
 
-    @GetMapping("/create")
-    public String getLessonCreateForm(Model model) {
-        model.addAttribute("teachers", teacherService.findAll());
-        model.addAttribute("students", studentService.findAll());
-        return "lesson/form";
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Lesson createLesson(@RequestBody Lesson lesson, @RequestParam("studentId") int studentId, @RequestParam("teacherId") int teacherId) {
+        return lessonService.save(lesson, studentId, teacherId);
     }
 
-    @PostMapping("/create")
-    public String createLesson(Lesson lesson, @RequestParam("studentId") int studentId, @RequestParam("teacherId") int teacherId) {
-        lessonService.save(lesson, studentId, teacherId);
-        return "redirect:/lessons";
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable int id) {
+        lessonService.deleteById(id);
     }
 
-    @DeleteMapping(params = "idToDelete")
-    @ResponseBody
-    public void deleteById(@RequestParam int idToDelete) {
-        lessonService.deleteById(idToDelete);
+    @GetMapping("/{lessonId}")
+    public Lesson getLessonToUpdate(@PathVariable int lessonId) {
+        return lessonService.findById(lessonId);
     }
 
-    @GetMapping("/update")
-    public String getLessonToUpdate(@RequestParam int lessonId, Model model) {
-        model.addAttribute("lesson", lessonService.findById(lessonId));
-        return "lesson/changeDateTime";
+    @PutMapping("/{lessonId}")
+    public Lesson updateLesson(@PathVariable int lessonId, @RequestParam LocalDateTime newTime) throws IllegalArgumentException, EntityNotFoundException {
+        return lessonService.updateLessonTime(lessonId, newTime);
     }
 
-    @PostMapping("/update")
-    public String updateLesson(@RequestParam int lessonId, @RequestParam LocalDateTime newTime, Model model) throws IllegalArgumentException, EntityNotFoundException {
-        Lesson updatedLesson = lessonService.updateLessonTime(lessonId, newTime);
-        model.addAttribute("lesson", updatedLesson);
-        return "redirect: lesson/list";
+    @GetMapping("/createForm")
+    public Map<String, Object> getLessonCreateForm() {
+        Map<String, Object> formInfo = new HashMap<>();
+        formInfo.put("teachers", teacherService.findAll());
+        formInfo.put("students", studentService.findAll());
+        return formInfo;
     }
+
 }

@@ -22,7 +22,7 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public void save(Student student, int teacherId) {
+    public Student save(Student student, int teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new EntityNotFoundException(MessageFormat
                         .format("Nauczyciel o id: {0} nie został znaleziony", teacherId)));
@@ -33,9 +33,10 @@ public class StudentService {
         student.setTeacher(teacher);
         student.setActive(true);
         studentRepository.save(student);
+        return student;
     }
 
-    public void updateTeacher(int studentId, int teacherId) {
+    public Student updateTeacher(int studentId, int teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono nauczyciela o danym id: " + teacherId));
         Student student = studentRepository.findById(studentId)
@@ -46,6 +47,7 @@ public class StudentService {
         }
         student.setTeacher(teacher);
         studentRepository.save(student);
+        return student;
     }
 
     public void deleteById(int id) {

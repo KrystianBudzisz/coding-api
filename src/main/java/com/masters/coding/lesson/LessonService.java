@@ -10,9 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -27,7 +25,7 @@ public class LessonService {
         return lessonRepository.findAll();
     }
 
-    public void save(Lesson lesson, int studentId, int teacherId) {
+    public Lesson save(Lesson lesson, int studentId, int teacherId) {
         LocalDateTime newTime = lesson.getDateTime();
         if (newTime.isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("Lekcja nie moze byc tworzona w przeszlosci");
@@ -47,6 +45,7 @@ public class LessonService {
         lesson.setTeacher(teacher);
 
         lessonRepository.save(lesson);
+        return lesson;
     }
 
     public void deleteById(int id) {
