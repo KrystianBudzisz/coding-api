@@ -1,8 +1,10 @@
 package com.masters.coding.teacher;
 
 import com.masters.coding.common.Language;
+import com.masters.coding.teacher.model.CreateTeacherCommand;
 import com.masters.coding.teacher.model.Teacher;
 import com.masters.coding.teacher.model.TeacherDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -13,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/teachers")
+@RequestMapping("/api/teachers")
 public class TeacherController {
 
     private final TeacherService teacherService;
@@ -36,20 +38,18 @@ public class TeacherController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TeacherDto createTeacher(@RequestBody Teacher teacher) {
-        return TeacherDto.fromEntity(teacherService.save(teacher));
+    public TeacherDto createTeacher(@RequestBody @Valid CreateTeacherCommand command) {
+        Teacher toSave = command.toEntity();
+        return TeacherDto.fromEntity(teacherService.save(toSave));
     }
-
 
     @GetMapping(params = "language")
     public List<TeacherDto> findAllByLanguage(@RequestParam Language language) {
-        return teacherService.findAllByLanguage(language).stream().map(TeacherDto::fromEntity).toList();
+        return teacherService.findAllByLanguage(language)
+                .stream()
+                .map(TeacherDto::fromEntity)
+                .toList();
     }
 
-    @GetMapping("/create-form")
-    public String getTeacherCreateForm(Model model) {
-        model.addAttribute("languages", Language.values());
-        return "teacher/form";
-    }
 
 }

@@ -23,8 +23,6 @@ import java.util.Map;
 public class LessonController {
 
     private final LessonService lessonService;
-    private final TeacherService teacherService;
-    private final StudentService studentService;
 
     @GetMapping
     public List<Lesson> getLessonList() {
@@ -49,16 +47,10 @@ public class LessonController {
     }
 
     @PutMapping("/{lessonId}")
-    public Lesson updateLesson(@PathVariable int lessonId, @RequestParam LocalDateTime newTime) throws IllegalArgumentException, EntityNotFoundException {
+    public Lesson updateLesson(@PathVariable int lessonId,
+                               @RequestParam LocalDateTime newTime) throws IllegalArgumentException, EntityNotFoundException {
         return lessonService.updateLessonTime(lessonId, newTime);
     }
 
-    @GetMapping("/createForm")
-    public Map<String, Object> getLessonCreateForm() {
-        Map<String, Object> formInfo = new HashMap<>();
-        formInfo.put("teachers", teacherService.findAll());
-        formInfo.put("students", studentService.findAll());
-        return formInfo;
-    }
 
 }
