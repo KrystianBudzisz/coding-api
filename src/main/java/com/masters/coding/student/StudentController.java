@@ -2,9 +2,11 @@ package com.masters.coding.student;
 
 
 import com.masters.coding.common.Language;
+import com.masters.coding.student.model.CreateStudentCommand;
 import com.masters.coding.student.model.Student;
 import com.masters.coding.student.model.StudentDto;
 import com.masters.coding.teacher.TeacherService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -15,33 +17,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Controller
 @RequiredArgsConstructor
-@RequestMapping("/students")
+@RestController
+@RequestMapping("/api/students")
 public class StudentController {
 
     private final StudentService studentService;
-    private final TeacherService teacherService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Student createStudent(@RequestBody Student student, @RequestParam("teacherId") int teacherId) {
-        return studentService.save(student, teacherId);
+    public Student createStudent(@RequestBody @Valid CreateStudentCommand command) {
+        Student toSave = command.toEntity();
+        return studentService.save(toSave, command.getTeacherId());
     }
 
-    @GetMapping("/teacher/{teacherId}")
-    public List<StudentDto> findAllByTeacherId(@PathVariable("teacherId") int teacherId) {
+    @GetMapping(params = "teacherId")
+    public List<StudentDto> findAllByTeacherId(@RequestParam("teacherId") int teacherId) {
         return studentService.findAllByTeacherId(teacherId).stream()
                 .map(StudentDto::fromEntity)
                 .toList();
     }
 
-    @GetMapping("/{studentId}/update")
+    @GetMapping("/{studentId}")
     public Student getStudentUpdate(@PathVariable int studentId) {
         return studentService.findById(studentId);
     }
 
-    @PutMapping("/{studentId}/update")
+    @PutMapping("/{studentId}")
     public Student updateStudent(@PathVariable int studentId, @RequestParam int teacherId) {
         return studentService.updateTeacher(studentId, teacherId);
     }
@@ -50,15 +52,6 @@ public class StudentController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable int id) {
         studentService.deleteById(id);
-    }
-
-    @GetMapping("/createForm")
-    public Map<String, Object> getStudentCreateForm() {
-        Map<String, Object> formInfo = new HashMap<>();
-        formInfo.put("languages", Language.values());
-        formInfo.put("teachers", teacherService.findAll());
-        formInfo.put("students", studentService.findAll());
-        return formInfo;
     }
 
 }
