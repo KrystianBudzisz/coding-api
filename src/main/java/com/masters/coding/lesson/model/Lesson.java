@@ -28,9 +28,11 @@ public class Lesson {
     private Teacher teacher;
 
     private LocalDateTime dateTime;
+
     private boolean active;
 
-    public String toString() {
-        return student.getFirstName() + " " + student.getLastName();
+    public String toString() { //TODO  Check changes
+        return "Student: " + student.getFirstName() + " " + student.getLastName() + "Teacher: " +
+                teacher.getFirstName() + " " + teacher.getLastName();
     }
 }

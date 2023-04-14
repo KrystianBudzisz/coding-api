@@ -1,6 +1,7 @@
 package com.masters.coding.teacher;
 
 import com.masters.coding.common.Language;
+import com.masters.coding.common.exception.TeacherNotFoundException;
 import com.masters.coding.teacher.model.Teacher;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -18,21 +19,22 @@ public class TeacherService {
         return teacherRepository.findAllByActiveTrue();
     }
 
-    public Teacher save(Teacher teacher) {
-        teacher.setActive(true);
-        return teacherRepository.save(teacher); // dodanie return ?
+    public Teacher findById(int id) {
+        return teacherRepository.findById(id)
+                .orElseThrow(() -> new TeacherNotFoundException("Nie znaleziono nauczyciela o danym id: " + id));
     }
 
     public List<Teacher> findAllByLanguage(Language language) {
         return teacherRepository.findAllByLanguagesContaining(language);
     }
 
+    public Teacher save(Teacher teacher) {
+        teacher.setActive(true);
+        return teacherRepository.save(teacher);
+    }
+
     public void deleteById(int id) {
         teacherRepository.deleteById(id);
     }
 
-    public Teacher findById(int id) {
-        return teacherRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono nauczyciela o danym id: " + id));
-    }
 }

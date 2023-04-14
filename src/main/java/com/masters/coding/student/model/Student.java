@@ -35,7 +35,8 @@ public class Student {
 
     @OneToMany(mappedBy = "student")
     private Set<Lesson> lessonList;
-    public String getFullName() {
+
+    public String toString() {
         return firstName + " " + lastName;
     }
 }

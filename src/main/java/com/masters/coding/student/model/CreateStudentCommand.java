@@ -1,11 +1,8 @@
 package com.masters.coding.student.model;
 
 import com.masters.coding.common.Language;
-import com.masters.coding.teacher.model.Teacher;
 import jakarta.validation.constraints.*;
 import lombok.Data;
-
-import java.util.Set;
 
 @Data
 public class CreateStudentCommand {
