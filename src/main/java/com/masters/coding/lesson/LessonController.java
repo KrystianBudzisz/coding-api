@@ -28,13 +28,11 @@ public class LessonController {
                 .toList();
     }
 
-    @PostMapping //TODO I made
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LessonDto createLesson(@RequestBody @Valid CreateLessonCommand commad,
-                                  @RequestParam("studentId") int studentId,
-                                  @RequestParam("teacherId") int teacherId) {
+    public LessonDto createLesson(@RequestBody @Valid CreateLessonCommand commad) {
         Lesson toSave = commad.toEntity();
-        return LessonDto.fromEntity(lessonService.save(toSave, studentId, teacherId));
+        return LessonDto.fromEntity(lessonService.save(toSave, commad.getStudentId(), commad.getTeacherId()));
     }
 
     @GetMapping("/{lessonId}")

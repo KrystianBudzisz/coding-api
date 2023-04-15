@@ -1,27 +1,26 @@
 package com.masters.coding.lesson.model;
 
-import com.masters.coding.student.model.Student;
-import com.masters.coding.teacher.model.Teacher;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-public class CreateLessonCommand {//todo check @NotNull or @Positive
-    @NotNull(message = "teacher required")
-    private Teacher teacher;
+public class CreateLessonCommand { //todo check @NotNull or @Positive
+    @Positive(message = "teacher required")
+    private int teacherId;
 
-    @NotNull(message = "student required")
-    private Student student;
+    @Positive(message = "student required")
+    private int studentId;
 
-    @NotNull(message = "language required")
+    @NotNull(message = "date required")
+    @Future(message = "date has to be int the future")
     private LocalDateTime dateTime;
 
     public Lesson toEntity() {
         return Lesson.builder()
-                .teacher(teacher)
-                .student(student)
                 .dateTime(dateTime)
                 .active(true)
                 .build();

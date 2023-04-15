@@ -26,9 +26,10 @@ public class LessonService {
         return lessonRepository.findAll();
     }
 
-    public Lesson findById(int lessonId) {
-        return lessonRepository.findById(lessonId)
-                .orElseThrow(() -> new LessonNotFoundException("Nie znaleziono lekcji o danym " + lessonId));
+    public Lesson findById(int id) {
+        throw new RuntimeException();
+//        return lessonRepository.findById(id)
+//                .orElseThrow(() -> new NotFoundException(Lesson.class.getSimpleName(), id));
     }
 
     public Lesson save(Lesson lesson, int studentId, int teacherId) {
@@ -38,9 +39,9 @@ public class LessonService {
         }
 
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new StudentNotFoundException("Nie znaleziono studenta o id: " + studentId));
+                .orElseThrow(() -> new NotFoundException(Student.class.getSimpleName(), studentId));
         Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new TeacherNotFoundException("Nie znaleziono nauczyciela o id: " + teacherId));
+                .orElseThrow(() -> new NotFoundException(Teacher.class.getSimpleName(), teacherId));
 
 
         if (lessonRepository.existsByTeacherAndDateTimeBetween(teacher, newTime.minusMinutes(59),
@@ -55,12 +56,12 @@ public class LessonService {
         return lesson;
     }
 
-    public Lesson updateLessonTime(int lessonId, LocalDateTime newTime) {
+    public Lesson updateLessonTime(int id, LocalDateTime newTime) {
         if (newTime.isBefore(LocalDateTime.now())) {
             throw new LessonInPastException("Lekcja nie moze zostac stworzona w przeszlosci");
         }
-        Lesson lesson = lessonRepository.findById(lessonId)
-                .orElseThrow(() -> new LessonNotFoundException("Nie znaleziono lekcji o danym id: " + lessonId));
+        Lesson lesson = lessonRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(Lesson.class.getSimpleName(), id));
 
         if (lesson.getDateTime().isBefore(LocalDateTime.now())) {
             throw new LessonAlreadyStartedException("Lekcja juz sie rozpoczela");
@@ -75,9 +76,9 @@ public class LessonService {
 
     public void deleteById(int id) {
         Lesson lesson = lessonRepository.findById(id)
-                .orElseThrow(() -> new LessonNotFoundException("Nie znaleziono lekcji o id: " + id));
-        if (lesson.getDateTime().plusMinutes(59).isBefore(LocalDateTime.now())) {
-            throw new LessonTeacherConflictException(MessageFormat
+                .orElseThrow(() -> new NotFoundException(Lesson.class.getSimpleName(), id));
+        if (lesson.getDateTime().isBefore(LocalDateTime.now())) {
+            throw new LessonInPastException(MessageFormat
                     .format("Lekcja pokrywa sie z inna lekcja {0}", lesson.getDateTime()));
         }
         lessonRepository.deleteById(id);

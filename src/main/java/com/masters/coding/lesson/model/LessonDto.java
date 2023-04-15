@@ -11,15 +11,15 @@ import java.time.LocalDateTime;
 @Builder
 public class LessonDto {
     private int id;
-    private Student student;
-    private Teacher teacher;
+    private int studentId;
+    private int teacherId;
     private LocalDateTime dateTime;
 
     public static LessonDto fromEntity(Lesson lesson) {
         return LessonDto.builder()
                 .id(lesson.getId())
-                .student(lesson.getStudent())
-                .teacher(lesson.getTeacher())
+                .studentId(lesson.getStudent().getId())
+                .teacherId(lesson.getTeacher().getId())
                 .dateTime(lesson.getDateTime())
                 .build();
     }

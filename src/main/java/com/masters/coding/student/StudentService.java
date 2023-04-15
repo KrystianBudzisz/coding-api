@@ -1,13 +1,11 @@
 package com.masters.coding.student;
 
 import com.masters.coding.common.exception.InvalidTeacherLanguageException;
-import com.masters.coding.common.exception.LanguageNotTaughtByTeacherException;
 import com.masters.coding.common.exception.StudentNotFoundException;
 import com.masters.coding.common.exception.TeacherNotFoundException;
 import com.masters.coding.student.model.Student;
 import com.masters.coding.teacher.TeacherRepository;
 import com.masters.coding.teacher.model.Teacher;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +38,7 @@ public class StudentService {
                 .orElseThrow(() -> new TeacherNotFoundException(MessageFormat
                         .format("Nauczyciel o id: {0} nie został znaleziony", teacherId)));
         if (!teacher.getLanguages().contains(student.getLanguage())) {
-            throw new LanguageNotTaughtByTeacherException(MessageFormat
+            throw new InvalidTeacherLanguageException(MessageFormat
                     .format("Język {0} nie jest nauczany przez tego nauczyciela", student.getLanguage()));
         }
         student.setTeacher(teacher);
