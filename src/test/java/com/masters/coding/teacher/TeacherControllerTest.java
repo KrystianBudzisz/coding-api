@@ -1,70 +1,31 @@
-//package com.masters.coding.teacher;
-//
-//import com.masters.coding.common.Language;
-//import com.masters.coding.teacher.model.Teacher;
-//import com.masters.coding.teacher.model.TeacherDto;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.junit.jupiter.MockitoExtension;
-//import org.springframework.ui.Model;
-//
-//import java.util.Collections;
-//import java.util.List;
-//
-//import static org.mockito.Mockito.verify;
-//
-//@ExtendWith(MockitoExtension.class)
-//public class TeacherControllerTest {
-//
-//    @InjectMocks
-//    private TeacherController teacherController;
-//
-//    @Mock
-//    private TeacherService teacherService;
-//
-//    @Mock
-//    private Model model;
-//
-//    private Teacher teacher;
+package com.masters.coding.teacher;
 
-//    @BeforeEach
-//    public void setUp() {
-//        teacher = new Teacher();
-//        teacher.setId(1);
-//        teacher.setFirstName("Alice");
-//        teacher.setLastName("Smith");
-//        teacher.setLanguages(Collections.singleton(Language.JAVA));
-//    }
-//
-//    @Test
-//    public void getTeachersListTest() {
-//        teacherController.getTeachersList(model);
-//        verify(teacherService).findAll();
-//    }
-//
-//    @Test
-//    public void getTeacherCreateFormTest() {
-//        teacherController.getTeacherCreateForm(model);
-//    }
-//
-//    @Test
-//    public void createTeacherTest() {
-//        teacherController.createTeacher(teacher);
-//        verify(teacherService).save(teacher);
-//    }
-//
-//    @Test
-//    public void findAllByLanguageTest() {
-//        List<TeacherDto> teacherDtos = teacherController.findAllByLanguage(Language.JAVA);
-//        verify(teacherService).findAllByLanguage(Language.JAVA);
-//    }
-//
-//    @Test
-//    public void deleteByIdTest() {
-//        teacherController.deleteById(1);
-//        verify(teacherService).deleteById(1);
-//    }
-//}
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+class TeacherControllerTest {
+
+
+    @Autowired
+    private MockMvc mockMvc;
+    @Test
+    void shouldGetSingleTeacher() throws Exception{
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/teachers/1"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is("1")));
+    }
+
+}
