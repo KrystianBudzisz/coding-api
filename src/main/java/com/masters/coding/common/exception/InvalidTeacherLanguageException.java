@@ -5,3 +5,4 @@ public class InvalidTeacherLanguageException extends RuntimeException {
         super(message);
     }
 }
+
