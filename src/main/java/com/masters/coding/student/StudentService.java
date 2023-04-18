@@ -1,8 +1,7 @@
 package com.masters.coding.student;
 
 import com.masters.coding.common.exception.InvalidTeacherLanguageException;
-import com.masters.coding.common.exception.StudentNotFoundException;
-import com.masters.coding.common.exception.TeacherNotFoundException;
+import com.masters.coding.common.exception.NotFoundException;
 import com.masters.coding.student.model.Student;
 import com.masters.coding.teacher.TeacherRepository;
 import com.masters.coding.teacher.model.Teacher;
@@ -26,7 +25,7 @@ public class StudentService {
 
     public Student findById(int studentId) {
         return studentRepository.findById(studentId)
-                .orElseThrow(() -> new StudentNotFoundException("Nie znaleziono ucznia o danym id: " + studentId));
+                .orElseThrow(() -> new NotFoundException(Student.class.getSimpleName(), studentId));
     }
 
     public List<Student> findAllByTeacherId(int teacherId) {
@@ -35,8 +34,7 @@ public class StudentService {
 
     public Student save(Student student, int teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new TeacherNotFoundException(MessageFormat
-                        .format("Nauczyciel o id: {0} nie został znaleziony", teacherId)));
+                .orElseThrow(() -> new NotFoundException(Teacher.class.getSimpleName(),teacherId));
         if (!teacher.getLanguages().contains(student.getLanguage())) {
             throw new InvalidTeacherLanguageException(MessageFormat
                     .format("Język {0} nie jest nauczany przez tego nauczyciela", student.getLanguage()));
@@ -49,9 +47,9 @@ public class StudentService {
 
     public Student updateTeacher(int studentId, int teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new TeacherNotFoundException("Nie znaleziono nauczyciela o danym id: " + teacherId));
+                .orElseThrow(() -> new NotFoundException(Teacher.class.getSimpleName(), teacherId));
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new StudentNotFoundException("Nie znaleziono ucznia o danym id: " + studentId));
+                .orElseThrow(() -> new NotFoundException(Student.class.getSimpleName(), studentId));
 
         if (!teacher.getLanguages().contains(student.getLanguage())) {
             throw new InvalidTeacherLanguageException("Język nauczyciela jest nieprawidłowy");

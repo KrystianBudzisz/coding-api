@@ -1,9 +1,8 @@
 package com.masters.coding.teacher;
 
 import com.masters.coding.common.Language;
-import com.masters.coding.common.exception.TeacherNotFoundException;
+import com.masters.coding.common.exception.NotFoundException;
 import com.masters.coding.teacher.model.Teacher;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,7 @@ public class TeacherService {
 
     public Teacher findById(int id) {
         return teacherRepository.findById(id)
-                .orElseThrow(() -> new TeacherNotFoundException("Nie znaleziono nauczyciela o danym id: " + id));
+                .orElseThrow(() -> new NotFoundException(Teacher.class.getSimpleName(), id));
     }
 
     public List<Teacher> findAllByLanguage(Language language) {
