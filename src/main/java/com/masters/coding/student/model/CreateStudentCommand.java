@@ -2,8 +2,9 @@ package com.masters.coding.student.model;
 
 import com.masters.coding.common.Language;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Data;
-
+@Builder
 @Data
 public class CreateStudentCommand {
 

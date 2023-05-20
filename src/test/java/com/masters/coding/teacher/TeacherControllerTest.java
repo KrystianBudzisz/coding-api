@@ -178,8 +178,6 @@ class TeacherControllerTest {
 
 
 
-    // TODO: 28.04.2023 create
-
 
     @AfterEach
     void teardown() {
