@@ -70,6 +70,7 @@ class StudentControllerTest {
 
     @Test
     void shouldCreateStudent() throws Exception {
+
         CreateStudentCommand studentToSave = CreateStudentCommand.builder()
                 .firstName("Jack")
                 .lastName("Brown")
@@ -77,15 +78,24 @@ class StudentControllerTest {
                 .teacherId(teacher.getId())
                 .build();
 
+        assertFalse(studentRepository.findById(2)
+                .filter(Student::isActive)
+                .isPresent());
+
         mockMvc.perform(post("/api/students")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(studentToSave)))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", notNullValue()))
+                .andExpect(jsonPath("$.id").value(2))
                 .andExpect(jsonPath("$.firstName").value(studentToSave.getFirstName()))
-                .andExpect(jsonPath("$.lastName").value(studentToSave.getLastName()));
+                .andExpect(jsonPath("$.lastName").value(studentToSave.getLastName()))
+                .andExpect(jsonPath("$.language", hasSize(1)));
+
+        Student newStudentToSave = studentRepository.findById(1).orElseThrow();
+
     }
+
 
 
     @Test

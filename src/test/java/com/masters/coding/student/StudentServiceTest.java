@@ -1,6 +1,7 @@
 package com.masters.coding.student;
 
 import com.masters.coding.common.Language;
+import com.masters.coding.common.exception.InvalidTeacherLanguageException;
 import com.masters.coding.student.model.Student;
 import com.masters.coding.teacher.TeacherRepository;
 import com.masters.coding.teacher.model.Teacher;
@@ -12,9 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
@@ -67,10 +66,16 @@ public class StudentServiceTest {
 
     @Test
     public void saveStudentInvalidTeacherLanguageTest() {
-        teacher.getLanguages().remove(Language.JAVA);
+
+        Set<Language> languages = new HashSet<>(teacher.getLanguages());
+        languages.remove(Language.JAVA);
+        teacher.setLanguages(languages);
+        student.setLanguage(Language.JAVA);
+
         when(teacherRepository.findById(1)).thenReturn(Optional.of(teacher));
 
-        assertThrows(IllegalArgumentException.class, () -> studentService.save(student, 1));
+        assertThrows(InvalidTeacherLanguageException.class, () -> studentService.save(student, 1));
+        verify(teacherRepository).findById(1);
     }
 
     @Test
@@ -84,13 +89,21 @@ public class StudentServiceTest {
     }
 
     @Test
+
     public void updateTeacherInvalidTeacherLanguageTest() {
-        teacher.getLanguages().remove(Language.JAVA);
+        Set<Language> languages = new HashSet<>(teacher.getLanguages());
+        languages.remove(Language.JAVA);
+        teacher.setLanguages(languages);
+        student.setLanguage(Language.JAVA);
+
         when(teacherRepository.findById(1)).thenReturn(Optional.of(teacher));
         when(studentRepository.findById(1)).thenReturn(Optional.of(student));
 
-        assertThrows(IllegalArgumentException.class, () -> studentService.updateTeacher(1, 1));
+        assertThrows(InvalidTeacherLanguageException.class, () -> studentService.updateTeacher(1, 1));
+        verify(teacherRepository).findById(1);
+        verify(studentRepository).findById(1);
     }
+
 
     @Test
     public void deleteByIdTest() {

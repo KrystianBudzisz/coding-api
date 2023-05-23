@@ -27,9 +27,8 @@ public class LessonService {
     }
 
     public Lesson findById(int id) {
-        throw new RuntimeException();// TODO: 20.05.2023 ogarnąć metodę
-//        return lessonRepository.findById(id)
-//                .orElseThrow(() -> new NotFoundException(Lesson.class.getSimpleName(), id));
+        return lessonRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(Lesson.class.getSimpleName(), id));
     }
 
     public Lesson save(Lesson lesson, int studentId, int teacherId) {
