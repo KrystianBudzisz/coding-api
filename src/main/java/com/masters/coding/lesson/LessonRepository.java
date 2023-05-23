@@ -16,6 +16,5 @@ public interface LessonRepository extends JpaRepository<Lesson, Integer>{
 
     boolean existsByTeacherAndDateTimeBetween(Teacher teacher, LocalDateTime from, LocalDateTime to);
 
-    List<Lesson> findLessonsByTeacher(Teacher teacher);
 
 }

@@ -61,12 +61,16 @@ public class LessonControllerTest {
         Student student = new Student();
         student.setFirstName("John");
         student.setLastName("Doe");
+        student.setActive(true);
         Student savedStudent = studentRepository.saveAndFlush(student);
 
         Teacher teacher = new Teacher();
         teacher.setFirstName("Jane");
         teacher.setLastName("Smith");
+        teacher.setActive(true);
         Teacher savedTeacher = teacherRepository.saveAndFlush(teacher);
+
+
 
         Lesson lessonToSave = Lesson.builder()
                 .id(1)
@@ -92,7 +96,6 @@ public class LessonControllerTest {
 
     @Test
     void shouldCreateLesson() throws Exception {
-        // Replace studentId and teacherId with actual values from your application
         CreateLessonCommand createLessonCommand = new CreateLessonCommand();
         createLessonCommand.setStudentId(1);
         createLessonCommand.setTeacherId(1);
