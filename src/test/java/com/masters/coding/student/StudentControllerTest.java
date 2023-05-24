@@ -5,6 +5,7 @@ import com.masters.coding.common.Language;
 import com.masters.coding.student.model.CreateStudentCommand;
 import com.masters.coding.student.model.Student;
 import com.masters.coding.teacher.TeacherRepository;
+import com.masters.coding.teacher.model.CreateTeacherCommand;
 import com.masters.coding.teacher.model.Teacher;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,7 +76,6 @@ class StudentControllerTest {
                 .firstName("Jack")
                 .lastName("Brown")
                 .language(Language.JAVA)
-                .teacherId(teacher.getId())
                 .build();
 
         assertFalse(studentRepository.findById(2)
@@ -91,9 +91,6 @@ class StudentControllerTest {
                 .andExpect(jsonPath("$.firstName").value(studentToSave.getFirstName()))
                 .andExpect(jsonPath("$.lastName").value(studentToSave.getLastName()))
                 .andExpect(jsonPath("$.language", hasSize(1)));
-
-        Student newStudentToSave = studentRepository.findById(1).orElseThrow();
-
     }
 
 
