@@ -1,5 +1,6 @@
 package com.masters.coding.lesson;
 
+import com.masters.coding.common.exception.UpdatingLessonAndTermNotAvailableException;
 import com.masters.coding.lesson.model.CreateLessonCommand;
 import com.masters.coding.lesson.model.Lesson;
 import com.masters.coding.lesson.model.LessonDto;
@@ -43,7 +44,7 @@ public class LessonController {
     @PutMapping("/{lessonId}")
     public LessonDto updateLesson(@PathVariable int lessonId,
                                @RequestParam LocalDateTime newTime)
-            throws IllegalArgumentException, EntityNotFoundException {
+            throws UpdatingLessonAndTermNotAvailableException {
         return LessonDto.fromEntity(lessonService.updateLessonTime(lessonId, newTime));
     }
 

@@ -145,11 +145,9 @@ class TeacherControllerTest {
     void shouldCreateTeacher() throws Exception {
 
         CreateTeacherCommand teacherToSave = CreateTeacherCommand.builder()
-//                .id(1)
                 .firstName("Dupa")
                 .lastName("Jasiu")
                 .languages(Collections.singleton(Language.PYTHON))
-//                .active(true)
                 .build();
 
         assertFalse(teacherRepository.findById(2)
@@ -161,13 +159,11 @@ class TeacherControllerTest {
                         .content(objectMapper.writeValueAsString(teacherToSave)))
                 .andDo(print())
                 .andExpect(status().isCreated())
-//                .andExpect(jsonPath("$.id", equalTo(1)))
                 .andExpect(jsonPath("$.id").value(2))
                 .andExpect(jsonPath("$.firstName").value(teacherToSave.getFirstName()))
                 .andExpect(jsonPath("$.lastName").value(teacherToSave.getLastName()))
 
                 .andExpect(jsonPath("$.languages").isArray())
-//                .andExpect(jsonPath("$.languages").isEmpty())
                 .andExpect(jsonPath("$.languages", hasSize(teacherToSave.getLanguages().size())))
         ;
 

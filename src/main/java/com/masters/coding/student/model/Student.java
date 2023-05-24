@@ -1,5 +1,6 @@
 package com.masters.coding.student.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.masters.coding.common.Language;
 import com.masters.coding.lesson.model.Lesson;
 import com.masters.coding.teacher.model.Teacher;
@@ -28,6 +29,7 @@ public class Student {
     @Enumerated(EnumType.STRING)
     private Language language;
 
+    @JsonIgnore
     @ManyToOne
     private Teacher teacher;
 
