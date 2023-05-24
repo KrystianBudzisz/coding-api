@@ -137,7 +137,7 @@ public class LessonControllerTest {
                 .andExpect(jsonPath("$.dateTime").value(newTime.format(FORMATTER)));
     }
 
-    @Disabled
+
     @Test
     void shouldThrowExceptionWhenUpdatingLessonAndTermNotAvailable() throws Exception {
         // TODO: 20.05.2023 przebudować, żeby weryfikowało błąd i jego treść

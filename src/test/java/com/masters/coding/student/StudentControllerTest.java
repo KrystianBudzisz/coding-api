@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 
+import static com.masters.coding.common.Language.JAVA;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -55,7 +56,7 @@ class StudentControllerTest {
                 .id(1)
                 .firstName("Alice")
                 .lastName("Smith")
-                .languages(Collections.singleton(Language.JAVA))
+                .languages(Collections.singleton(JAVA))
                 .active(true)
                 .build());
 
@@ -63,7 +64,7 @@ class StudentControllerTest {
                 .id(1)
                 .firstName("John")
                 .lastName("Doe")
-                .language(Language.JAVA)
+                .language(JAVA)
                 .teacher(teacher)
                 .active(true)
                 .build());
@@ -75,7 +76,8 @@ class StudentControllerTest {
         CreateStudentCommand studentToSave = CreateStudentCommand.builder()
                 .firstName("Jack")
                 .lastName("Brown")
-                .language(Language.JAVA)
+                .language(JAVA)
+                .teacherId(teacher.getId())
                 .build();
 
         assertFalse(studentRepository.findById(2)
@@ -90,7 +92,7 @@ class StudentControllerTest {
                 .andExpect(jsonPath("$.id").value(2))
                 .andExpect(jsonPath("$.firstName").value(studentToSave.getFirstName()))
                 .andExpect(jsonPath("$.lastName").value(studentToSave.getLastName()))
-                .andExpect(jsonPath("$.language", hasSize(1)));
+                .andExpect(jsonPath("$.language").value(JAVA.name()));
     }
 
 
@@ -118,30 +120,33 @@ class StudentControllerTest {
 
     @Test
     void shouldUpdateStudent() throws Exception {
-        Student updatedStudent = Student.builder()
-                .id(student.getId())
-                .firstName("Jack")
-                .lastName("Brown")
-                .language(Language.JAVA)
-                .teacher(teacher)
+        teacherRepository.saveAndFlush(Teacher.builder()
+                .id(2)
+                .firstName("Alice")
+                .lastName("Smith2")
+                .languages(Collections.singleton(JAVA))
                 .active(true)
-                .build();
+                .build());
 
-        CreateStudentCommand updateCommand = CreateStudentCommand.builder()
-                .firstName(updatedStudent.getFirstName())
-                .lastName(updatedStudent.getLastName())
-                .language(updatedStudent.getLanguage())
-                .teacherId(updatedStudent.getTeacher().getId())
-                .build();
+        assertFalse(studentRepository.findById(1)
+                .map(Student::getTeacher)
+                .filter(teach -> teach.getId() == 2)
+                .isPresent());
 
-        mockMvc.perform(put("/api/students/{studentId}/update", student.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateCommand)))
+        mockMvc.perform(put("/api/students/" + student.getId())
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(updateCommand))
+                                .param("teacherId", String.valueOf(2)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(student.getId()))
-                .andExpect(jsonPath("$.firstName").value(updatedStudent.getFirstName()))
-                .andExpect(jsonPath("$.lastName").value(updatedStudent.getLastName()));
+                .andExpect(jsonPath("$.firstName").value(student.getFirstName()))
+                .andExpect(jsonPath("$.lastName").value(student.getLastName()));
+
+        assertTrue(studentRepository.findById(1)
+                .map(Student::getTeacher)
+                .filter(teach -> teach.getId() == 2)
+                .isPresent());
     }
 
 

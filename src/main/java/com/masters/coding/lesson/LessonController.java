@@ -1,10 +1,9 @@
 package com.masters.coding.lesson;
 
-import com.masters.coding.common.exception.UpdatingLessonAndTermNotAvailableException;
+import com.masters.coding.common.exception.TermNotAvailableException;
 import com.masters.coding.lesson.model.CreateLessonCommand;
 import com.masters.coding.lesson.model.Lesson;
 import com.masters.coding.lesson.model.LessonDto;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,7 +43,7 @@ public class LessonController {
     @PutMapping("/{lessonId}")
     public LessonDto updateLesson(@PathVariable int lessonId,
                                @RequestParam LocalDateTime newTime)
-            throws UpdatingLessonAndTermNotAvailableException {
+            throws TermNotAvailableException {
         return LessonDto.fromEntity(lessonService.updateLessonTime(lessonId, newTime));
     }
 

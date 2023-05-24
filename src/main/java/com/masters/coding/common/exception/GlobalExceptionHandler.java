@@ -64,9 +64,9 @@ public class GlobalExceptionHandler {
         return errorDto;
     }
 
-    @ExceptionHandler(UpdatingLessonAndTermNotAvailableException.class)
+    @ExceptionHandler(TermNotAvailableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionDto handleUpdatingLessonAndTermNotAvailableException(UpdatingLessonAndTermNotAvailableException exception) {
+    public ExceptionDto handleUpdatingLessonAndTermNotAvailableException(TermNotAvailableException exception) {
         return new ExceptionDto(exception.getMessage());
     }
 }

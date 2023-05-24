@@ -83,8 +83,7 @@ class TeacherControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.timestamp").exists())
-                .andExpect(jsonPath("$.message").value(exceptionMsg))
-        ;
+                .andExpect(jsonPath("$.message").value(exceptionMsg));
     }
 
     @Test
@@ -166,9 +165,6 @@ class TeacherControllerTest {
                 .andExpect(jsonPath("$.languages").isArray())
                 .andExpect(jsonPath("$.languages", hasSize(teacherToSave.getLanguages().size())))
         ;
-
-        Teacher newTeacherToSave = teacherRepository.findById(1).orElseThrow();
-
 
     }
 
