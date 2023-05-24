@@ -6,7 +6,6 @@ import com.masters.coding.student.StudentRepository;
 import com.masters.coding.student.model.Student;
 import com.masters.coding.teacher.TeacherRepository;
 import com.masters.coding.teacher.model.Teacher;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +56,7 @@ public class LessonService {
 
     public Lesson updateLessonTime(int id, LocalDateTime newTime) {
         if (newTime.isBefore(LocalDateTime.now())) {
-            throw new LessonInPastException("Lekcja nie moze zostac stworzona w przeszlosci");
+            throw new TermNotAvailableException("Lekcja nie moze zostac stworzona w przeszlosci");
         }
         Lesson lesson = lessonRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Lesson.class.getSimpleName(), id));
@@ -67,7 +66,7 @@ public class LessonService {
         }
         if (lessonRepository.existsByTeacherAndDateTimeBetween(
                 lesson.getTeacher(), newTime.minusMinutes(59), newTime.plusMinutes(59))) {
-            throw new LessonTeacherConflictException("Nie mozna zaplanowac lekcji w tym terminie, nauczyciel jest zajety");
+            throw new TermNotAvailableException("Nie mozna zaplanowac lekcji w tym terminie, nauczyciel jest zajety");
         }
         lesson.setDateTime(newTime);
         return lessonRepository.save(lesson);
