@@ -31,7 +31,7 @@ public class Lesson {
 
     private boolean active;
 
-    public String toString() { //TODO  Check changes
+    public String toString() {
         return "Student: " + student.getFirstName() + " " + student.getLastName() + "Teacher: " +
                 teacher.getFirstName() + " " + teacher.getLastName();
     }
