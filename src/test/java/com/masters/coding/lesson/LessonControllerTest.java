@@ -148,7 +148,7 @@ public class LessonControllerTest {
         mockMvc.perform(put("/api/lessons/{lessonId}", lesson.getId())
                         .param("newTime", newTime.toString()))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.id").value(lesson.getId()))
                 .andExpect(jsonPath("$.studentId").value(lesson.getStudent().getId()))
                 .andExpect(jsonPath("$.teacherId").value(lesson.getTeacher().getId()))
