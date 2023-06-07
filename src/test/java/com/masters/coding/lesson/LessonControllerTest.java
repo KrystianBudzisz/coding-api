@@ -71,7 +71,6 @@ public class LessonControllerTest {
         Teacher savedTeacher = teacherRepository.saveAndFlush(teacher);
 
 
-
         Lesson lessonToSave = Lesson.builder()
                 .id(1)
                 .student(savedStudent)
@@ -145,14 +144,14 @@ public class LessonControllerTest {
 
         LocalDateTime newTime = LocalDateTime.now().plusDays(1);
 
+        String exceptionMsg = "Nie mozna zaplanowac lekcji w tym terminie, nauczyciel jest zajety";
+
         mockMvc.perform(put("/api/lessons/{lessonId}", lesson.getId())
                         .param("newTime", newTime.toString()))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.id").value(lesson.getId()))
-                .andExpect(jsonPath("$.studentId").value(lesson.getStudent().getId()))
-                .andExpect(jsonPath("$.teacherId").value(lesson.getTeacher().getId()))
-                .andExpect(jsonPath("$.dateTime").value(newTime.toString()));
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.message").value(exceptionMsg));
     }
 
     @Test
